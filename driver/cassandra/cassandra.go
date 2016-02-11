@@ -53,6 +53,9 @@ func (driver *Driver) Initialize(rawurl string) error {
 	cluster.Consistency = gocql.All
 	cluster.Timeout = 1 * time.Minute
 
+	if len(u.Query().Get("capath")) > 0 {
+		cluster.SslOpts = &gocql.SslOptions{CaPath: u.Query().Get("capath")}
+	}
 	if len(u.Query().Get("protocol")) > 0 {
 		protoversion, err := strconv.Atoi(u.Query().Get("protocol"))
 		if err != nil {
