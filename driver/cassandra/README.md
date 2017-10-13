@@ -9,6 +9,11 @@ migrate -url cassandra://host:port/keyspace?capath=/path/to/cacert.pem -path ./d
 migrate help # for more info
 ```
 
+Url format
+- Authentication: `cassandra://username:password@host:port/keyspace`
+- Cassandra v3.x: `cassandra://host:port/keyspace?protocol=4`
+
+
 ## Authors
 
 * Paul Bergeron, https://github.com/dinedal
