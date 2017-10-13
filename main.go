@@ -12,7 +12,7 @@ import (
 
 	"github.com/fatih/color"
 	_ "gopkg.in/mattes/migrate.v1/driver/bash"
-	_ "gopkg.in/mattes/migrate.v1/driver/cassandra"
+	_ "github.com/feideconnect/migrate/driver/cassandra"
 	_ "gopkg.in/mattes/migrate.v1/driver/crate"
 	_ "gopkg.in/mattes/migrate.v1/driver/mssql"
 	_ "gopkg.in/mattes/migrate.v1/driver/neo4j"
