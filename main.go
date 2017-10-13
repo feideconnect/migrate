@@ -15,7 +15,6 @@ import (
 	_ "gopkg.in/mattes/migrate.v1/driver/cassandra"
 	_ "gopkg.in/mattes/migrate.v1/driver/crate"
 	_ "gopkg.in/mattes/migrate.v1/driver/mssql"
-	_ "gopkg.in/mattes/migrate.v1/driver/mysql"
 	_ "gopkg.in/mattes/migrate.v1/driver/neo4j"
 	_ "gopkg.in/mattes/migrate.v1/driver/postgres"
 	_ "gopkg.in/mattes/migrate.v1/driver/ql"
