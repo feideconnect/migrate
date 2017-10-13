@@ -1,6 +1,6 @@
 // Package main is the CLI.
 // You can use the CLI via Terminal.
-// import "github.com/mattes/migrate/migrate" for usage within Go.
+// import "gopkg.in/mattes/migrate.v1/migrate" for usage within Go.
 package main
 
 import (
@@ -11,15 +11,18 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	_ "github.com/mattes/migrate/driver/bash"
-	_ "github.com/mattes/migrate/driver/cassandra"
-	_ "github.com/mattes/migrate/driver/mysql"
-	_ "github.com/mattes/migrate/driver/postgres"
-	_ "github.com/mattes/migrate/driver/sqlite3"
-	"github.com/mattes/migrate/file"
-	"github.com/mattes/migrate/migrate"
-	"github.com/mattes/migrate/migrate/direction"
-	pipep "github.com/mattes/migrate/pipe"
+	_ "gopkg.in/mattes/migrate.v1/driver/bash"
+	_ "github.com/feideconnect/migrate/driver/cassandra"
+	_ "gopkg.in/mattes/migrate.v1/driver/crate"
+	_ "gopkg.in/mattes/migrate.v1/driver/mssql"
+	_ "gopkg.in/mattes/migrate.v1/driver/neo4j"
+	_ "gopkg.in/mattes/migrate.v1/driver/postgres"
+	_ "gopkg.in/mattes/migrate.v1/driver/ql"
+	_ "gopkg.in/mattes/migrate.v1/driver/sqlite3"
+	"gopkg.in/mattes/migrate.v1/file"
+	"gopkg.in/mattes/migrate.v1/migrate"
+	"gopkg.in/mattes/migrate.v1/migrate/direction"
+	pipep "gopkg.in/mattes/migrate.v1/pipe"
 )
 
 var url = flag.String("url", os.Getenv("MIGRATE_URL"), "")
@@ -158,7 +161,8 @@ func main() {
 		fmt.Println(version)
 
 	default:
-		fallthrough
+		helpCmd()
+		os.Exit(1)
 	case "help":
 		helpCmd()
 	}
@@ -172,31 +176,31 @@ func writePipe(pipe chan interface{}) (ok bool) {
 			case item, more := <-pipe:
 				if !more {
 					return okFlag
-				} else {
-					switch item.(type) {
+				}
+				switch item.(type) {
 
-					case string:
-						fmt.Println(item.(string))
+				case string:
+					fmt.Println(item.(string))
 
-					case error:
+				case error:
+					c := color.New(color.FgRed)
+					c.Printf("%s\n\n", item.(error).Error())
+					okFlag = false
+
+				case file.File:
+					f := item.(file.File)
+					if f.Direction == direction.Up {
+						c := color.New(color.FgGreen)
+						c.Print(">")
+					} else if f.Direction == direction.Down {
 						c := color.New(color.FgRed)
-						c.Println(item.(error).Error(), "\n")
-						okFlag = false
-
-					case file.File:
-						f := item.(file.File)
-						c := color.New(color.FgBlue)
-						if f.Direction == direction.Up {
-							c.Print(">")
-						} else if f.Direction == direction.Down {
-							c.Print("<")
-						}
-						fmt.Printf(" %s\n", f.FileName)
-
-					default:
-						text := fmt.Sprint(item)
-						fmt.Println(text)
+						c.Print("<")
 					}
+					fmt.Printf(" %s\n", f.FileName)
+
+				default:
+					text := fmt.Sprint(item)
+					fmt.Println(text)
 				}
 			}
 		}
