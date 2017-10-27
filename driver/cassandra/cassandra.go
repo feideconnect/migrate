@@ -44,10 +44,7 @@ func (driver *Driver) Initialize(rawurl string) error {
 	}
 	if len(u.Query().Get("consistency")) > 0 {
 		var consistency gocql.Consistency
-		consistency, err = gocql.ParseConsistency(u.Query().Get("consistency"))
-		if err != nil {
-			return err
-		}
+		consistency = gocql.ParseConsistency(u.Query().Get("consistency"))
 
 		cluster.Consistency = consistency
 	}
